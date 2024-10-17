@@ -429,11 +429,7 @@
             <version>${joda.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}</version>
-        </dependency>
+
 
         <!--        &lt;!&ndash; Add slf4j API frontend binding with JUL backend &ndash;&gt;-->
         <dependency>
