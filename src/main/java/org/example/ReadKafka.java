@@ -16,6 +16,8 @@ import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.*;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
 
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
@@ -30,8 +32,12 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+
+
 
 public class ReadKafka {
+    private static final Logger LOG = LoggerFactory.getLogger(ReadKafka.class);
     public interface ReadKafkaOptions extends PipelineOptions,StreamingOptions {
         @Default.String("bootstrap.kafka-console.us-east4.managedkafka.ggspandf.cloud.goog:9092")
         String getBootstrapServers();
@@ -46,6 +52,7 @@ public class ReadKafka {
         void setOutputFileFormat(String outputFileFormat);
 
     }
+
 
     public static void main(String[] args) {
         ReadKafkaOptions options =
@@ -76,11 +83,26 @@ public class ReadKafka {
                                         ByteArrayDeserializer.class, NullableCoder.of(ByteArrayCoder.of()))
                                 .withValueDeserializerAndCoder(ByteArrayDeserializer.class, ByteArrayCoder.of())
                                 .withoutMetadata())
-                /* Step #2: Window the messages into minute intervals specified by the executor. */
-                .apply(
-                        "Creating Window",
-                        Window.into(
-                                FixedWindows.of(Duration.standardMinutes(1))));
+                .apply("ConvertBytesToString", ParDo.of(new DoFn<KV<byte[], byte[]>, String>() {
+                    @ProcessElement
+                    public void processElement(ProcessContext context) {
+                        // Extract the Kafka message value (byte array)
+                        byte[] messageBytes = context.element().getValue();
+
+                        // Convert byte array to String (assuming UTF-8 encoding)
+                        String messageString = new String(messageBytes, StandardCharsets.UTF_8);
+
+                        // Output the string
+                        context.output(messageString);
+                    }
+                }))
+                .apply("PrintMessages", ParDo.of(new DoFn<String, Void>() {
+                    @ProcessElement
+                    public void processElement(ProcessContext context) {
+                        // Print the message
+                        System.out.println(context.element());
+                    }
+                }));
 
         pipeline.run();
 
