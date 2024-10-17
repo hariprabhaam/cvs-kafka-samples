@@ -166,7 +166,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <!-- Makes the DirectRunner available when running a pipeline. -->
+            <!--            &lt;!&ndash; Makes the DirectRunner available when running a pipeline. &ndash;&gt;-->
             <dependencies>
                 <dependency>
                     <groupId>org.apache.beam</groupId>
@@ -361,6 +361,12 @@
             <version>${beam.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+
         <!-- Dependencies below this line are specific dependencies needed by the examples code. -->
         <dependency>
             <groupId>com.google.api-client</groupId>
@@ -429,7 +435,7 @@
             <version>${kafka.version}</version>
         </dependency>
 
-        <!-- Add slf4j API frontend binding with JUL backend -->
+        <!--        &lt;!&ndash; Add slf4j API frontend binding with JUL backend &ndash;&gt;-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -444,8 +450,8 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Hamcrest and JUnit are required dependencies of PAssert,
-             which is used in the main code of DebuggingWordCount example. -->
+        <!--        &lt;!&ndash; Hamcrest and JUnit are required dependencies of PAssert,-->
+        <!--             which is used in the main code of DebuggingWordCount example. &ndash;&gt;-->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
@@ -464,7 +470,7 @@
             <version>${junit.version}</version>
         </dependency>
 
-        <!-- The DirectRunner is needed for unit tests. -->
+        <!--        &lt;!&ndash; The DirectRunner is needed for unit tests. &ndash;&gt;-->
         <dependency>
             <groupId>org.apache.beam</groupId>
             <artifactId>beam-runners-direct-java</artifactId>
